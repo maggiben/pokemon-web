@@ -1,6 +1,7 @@
 import { IPokemon } from '../types/pokemon';
+import { IUser } from '../types/user';
 
-export const API_URL = 'http://localhost:3000';
+export const API_URL = 'http://localhost:8080';
 
 export const login = async (username: string, password: string) => {
   try {
@@ -20,8 +21,16 @@ export const login = async (username: string, password: string) => {
   }
 };
 
+export const pokemons = async () => {
+  try {
+    const response = await fetch(`${API_URL}/pokemons`);
+    return await response.json();
+  } catch (error) {
+    return error;
+  }
+};
 
-export const addPokedexPokemon = async (pokemon: IPokemon) => {
+export const addPokedexPokemon = async (pokemon: IPokemon, user: IUser) => {
   try {
     const response = await fetch(`${API_URL}/addpokemon`, {
       method: 'POST',
@@ -30,6 +39,7 @@ export const addPokedexPokemon = async (pokemon: IPokemon) => {
       }),
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
       },
     });
     return await response.json();
@@ -38,7 +48,7 @@ export const addPokedexPokemon = async (pokemon: IPokemon) => {
   }
 };
 
-export const deletePokedexPokemon = async (pokemon: IPokemon) => {
+export const deletePokedexPokemon = async (pokemon: IPokemon, user: IUser) => {
   try {
     const response = await fetch(`${API_URL}/deletepokemon`, {
       method: 'DELETE',
@@ -47,6 +57,7 @@ export const deletePokedexPokemon = async (pokemon: IPokemon) => {
       }),
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
       },
     });
     return await response.json();
