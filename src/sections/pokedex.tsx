@@ -24,7 +24,7 @@ const Pokedex: React.FunctionComponent<IPokedexProps> = (props) => {
       { pokedex.length ? (
         pokedex.map((pokemon: IPokemon) => {
           return (
-            <Row gutter={12} className="pokedex-pokemon">
+            <Row gutter={12} key={pokemon.id} className="pokedex-pokemon">
               <Col span={8}>
                 <div className="pokedex-info">
                   <Image

@@ -28,6 +28,10 @@ const SignUp: React.FunctionComponent<ISignUpProps> = (props) => {
     form.submit();
   };
 
+  const initialValues = { 
+    language: 'english'
+  };
+
   return (
     <Modal
       title="User SignUp"
@@ -36,7 +40,7 @@ const SignUp: React.FunctionComponent<ISignUpProps> = (props) => {
       onOk={onOK}
       onCancel={onCancel}
     >
-      <Form name="basic" layout="vertical" form={form} initialValues={{ remember: true }} onFinish={onFinish}>
+      <Form name="basic" layout="vertical" form={form} initialValues={initialValues} onFinish={onFinish}>
         <Form.Item
           label="Username"
           name="username"
