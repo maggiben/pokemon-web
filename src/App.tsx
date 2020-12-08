@@ -61,6 +61,7 @@ const App: React.FunctionComponent<{}> = () => {
     if (user) {
       await loadPokedex(user);
       setUser(user);
+      setSection('pokemons');
     } else {
       showError('Could not signup user');
     }
@@ -105,6 +106,7 @@ const App: React.FunctionComponent<{}> = () => {
   const logOut = (): void => {
     setUser(undefined);
     setPokedex(undefined);
+    setSection('pokemons');
   };
 
   const onAddPokedexPokemon = async (pokemon: IPokemon): Promise<void> => {
