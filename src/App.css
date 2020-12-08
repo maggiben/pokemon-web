@@ -40,7 +40,7 @@
   align-items: center;
 }
 
-.pokemon-vote {
+.pokemon-add {
   align-items: center;
   background-color: #1890ff;
   border-radius: 50%;
@@ -60,8 +60,28 @@
   cursor: pointer;
 }
 
-.pokemon.isActive .pokemon-vote {
+.pokemon.isActive .pokemon-add {
   display: none;
+}
+
+.pokemon-delete {
+  align-items: center;
+  background-color: #ff188b;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  box-shadow: 0 0 1em rgba(0, 0, 0, 0.25);
+  display: flex;
+  height: 2.25em;
+  justify-content: center;
+  padding: 0.5em;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 65%;
+  transform: translateX(50%);
+  width: 2.25em;
+  color: white;
+  cursor: pointer;
 }
 
 .pokemon-title {
@@ -88,4 +108,26 @@
   padding: 2px;
   font-size: 0.74rem;
   margin-right: 3px;
+}
+
+
+.pokedex {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  flex-direction: column;
+}
+
+.pokedex-pokemon {
+  border: 1px solid #0c6ac2;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.pokedex-remove {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }

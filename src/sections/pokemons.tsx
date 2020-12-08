@@ -9,12 +9,14 @@ const { Option } = Select;
 interface IPokemonsProps {
   user?: IUser;
   pokedex?: TPokedex;
-  onAddPokemonToPokedex: (pokemon: IPokemon) => void;
+  onAddPokedexPokemon: (pokemon: IPokemon) => Promise<void>;
+  onDeletePokedexPokemon: (pokemon: IPokemon) => Promise<void>;
   language: Languages;
+  showError: (message?: string) => void;
 }
 
 const Pokemons: React.FunctionComponent<IPokemonsProps> = (props) => {
-  const { user, pokedex, onAddPokemonToPokedex, language } = props;
+  const { user, pokedex, onAddPokedexPokemon, onDeletePokedexPokemon, language, showError } = props;
   const [pokemons, setPokemons] = React.useState<IPokemon[] | undefined>(undefined);
   const [loading, setLoading] = React.useState<boolean>(false);
   const [search, setSearch] = React.useState<string | undefined>(undefined);
@@ -26,9 +28,13 @@ const Pokemons: React.FunctionComponent<IPokemonsProps> = (props) => {
       const response = await fetchPokemons();
       return response;
     };
-    fetchData().then(data => {
+    fetchData()
+    .then(data => {
       setPokemons(data);
       setLoading(false);
+    })
+    .catch(error => {
+      showError(error.message);
     });
   }, []);
 
@@ -47,14 +53,14 @@ const Pokemons: React.FunctionComponent<IPokemonsProps> = (props) => {
       .filter(pokemon => pokemon.name[language].toLowerCase().includes(search.toLowerCase()))
       .map(pokemon => (
         <li key={pokemon.id}>
-          <Pokemon key={pokemon.id} user={user} pokedex={pokedex} pokemon={pokemon} language={language} onAddPokemonToPokedex={onAddPokemonToPokedex} />
+          <Pokemon user={user} pokedex={pokedex} pokemon={pokemon} language={language} onAddPokedexPokemon={onAddPokedexPokemon} onDeletePokedexPokemon={onDeletePokedexPokemon} />
         </li>
       ));
     }
     return pokemons
     .map(pokemon => (
       <li key={pokemon.id}>
-        <Pokemon key={pokemon.id} user={user} pokedex={pokedex} pokemon={pokemon} language={language} onAddPokemonToPokedex={onAddPokemonToPokedex} />
+        <Pokemon user={user} pokedex={pokedex} pokemon={pokemon} language={language} onAddPokedexPokemon={onAddPokedexPokemon} onDeletePokedexPokemon={onDeletePokedexPokemon} />
       </li>
     ));
   };
@@ -64,7 +70,7 @@ const Pokemons: React.FunctionComponent<IPokemonsProps> = (props) => {
     if (pokemon) {
       return (
         <li key={pokemon.id}>
-          <Pokemon user={user} pokemon={pokemon} pokedex={pokedex} language={language} onAddPokemonToPokedex={onAddPokemonToPokedex} />
+          <Pokemon user={user} pokemon={pokemon} pokedex={pokedex} language={language} onAddPokedexPokemon={onAddPokedexPokemon} onDeletePokedexPokemon={onDeletePokedexPokemon} />
         </li>
       );
     }
