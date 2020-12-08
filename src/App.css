@@ -125,6 +125,13 @@
   margin-bottom: 2rem;
 }
 
+.pokedex-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
 .pokedex-remove {
   display: flex;
   justify-content: center;
