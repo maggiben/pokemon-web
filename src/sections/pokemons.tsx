@@ -1,5 +1,6 @@
 import React from 'react';
-import { Select } from 'antd';
+import { Select, Button } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 import Pokemon from './pokemon';
 import { pokemons as fetchPokemons } from '../utils/api';
 import { IPokemon, Languages, TPokedex } from '../types/pokemon';
@@ -86,6 +87,11 @@ const Pokemons: React.FunctionComponent<IPokemonsProps> = (props) => {
     setSelectedPokemon(value);
   };
 
+  const clearSelected = () => {
+    setSelectedPokemon(undefined);
+    setSearch(undefined);
+  }
+
   const selectStyle = {
     minWidth: '20rem'
   };
@@ -95,7 +101,7 @@ const Pokemons: React.FunctionComponent<IPokemonsProps> = (props) => {
       { pokemons && (
         <Select 
           showSearch
-          value={undefined}
+          value={selectedPokemon}
           style={selectStyle}
           placeholder="Search Pokemon"
           defaultActiveFirstOption={false}
@@ -109,6 +115,7 @@ const Pokemons: React.FunctionComponent<IPokemonsProps> = (props) => {
         { renderOptions(pokemons, language, search) }
         </Select>
       )}
+      { selectedPokemon && <Button icon={<CloseOutlined />} onClick={clearSelected}>Clear selected</Button>}
       <ul className="pokemons">
         { !loading && pokemons && !selectedPokemon && (renderPokemons(pokemons, language, search))}
         { !loading && pokemons && selectedPokemon && (renderPokemon(pokemons, language, selectedPokemon))}
