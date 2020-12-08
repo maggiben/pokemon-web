@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Image, Progress, Button } from 'antd';
+import { Row, Col, Image, Progress, Button, Empty } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import { IPokemon, TPokedex, Languages } from '../types/pokemon';
 
@@ -58,7 +58,11 @@ const Pokedex: React.FunctionComponent<IPokedexProps> = (props) => {
           );
         })
       ) : (
-        <h1>You have no pokemons in your pokedex</h1>
+        <Empty description={
+          <span>
+            You have no pokemons in your pokedex
+          </span>
+        }/>
       )
       }
     </div>

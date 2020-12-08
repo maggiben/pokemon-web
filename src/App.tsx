@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Empty } from 'antd';
 import { UserOutlined, FlagOutlined } from '@ant-design/icons';
 import { login, signup, pokedex as fetchPokedex, deletePokedexPokemon, addPokedexPokemon } from './utils/api';
 import Pokemons from './sections/pokemons';
@@ -33,9 +33,9 @@ const App: React.FunctionComponent<{}> = () => {
           if (pokedex && user) {
             return <Pokedex pokedex={pokedex} language={language} onDeletePokedexPokemon={onDeletePokedexPokemon}/>;
           } 
-          return <div>Pokedex</div>; 
+          return <Empty />;
         default:
-          return <h1>Empty</h1>;
+          return <Empty />;
       }
     }
     return <Pokemons onAddPokedexPokemon={onAddPokedexPokemon} onDeletePokedexPokemon={onDeletePokedexPokemon} language={language} pokedex={pokedex} user={user} showError={showError} />;

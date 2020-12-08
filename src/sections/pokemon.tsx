@@ -1,6 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Image, Tooltip } from 'antd';
+import { Image, Tooltip, Button } from 'antd';
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { IPokemon, Languages, TPokedex } from '../types/pokemon';
 import { IUser } from '../types/user';
 
@@ -54,7 +55,7 @@ const Pokemon: React.FunctionComponent<IPokemonProps> = (props) => {
               title={`Add ${pokemon.name[language]} to your pokedex`}
               color="#1890ff"
             >
-              <span className="pokemon-add" onClick={addPokemon(pokemon)}>+</span>
+              <Button shape="circle" type="primary" className="pokemon-add" icon={<PlusOutlined />} onClick={addPokemon(pokemon)} />
             </Tooltip>
           </figcaption>
         )}
@@ -64,7 +65,7 @@ const Pokemon: React.FunctionComponent<IPokemonProps> = (props) => {
               title={`Delete ${pokemon.name[language]} from your pokedex`}
               color="#1890ff"
             >
-              <span className="pokemon-delete" onClick={deletePokemon(pokemon)}>-</span>
+              <Button shape="circle" className="pokemon-delete" icon={<DeleteOutlined />} onClick={deletePokemon(pokemon)} />
             </Tooltip>
           </figcaption>
         )}
