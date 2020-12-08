@@ -1,5 +1,5 @@
 import { IPokemon } from '../types/pokemon';
-import { IUser } from '../types/user';
+import { IUser, Languages } from '../types/user';
 
 export const API_URL = 'http://localhost:8080';
 
@@ -24,13 +24,14 @@ export const login = async (username: string, password: string) => {
   }
 };
 
-export const signup = async (username: string, email: string, password: string) => {
+export const signup = async (username: string, email: string, language: Languages, password: string) => {
   try {
     const response = await fetch(`${API_URL}/signup`, {
       method: 'POST',
       body: JSON.stringify({
         username,
         email,
+        language,
         password
       }),
       headers: {
@@ -45,6 +46,28 @@ export const signup = async (username: string, email: string, password: string) 
     throw new Error(error);
   }
 };
+
+export const setlanguage = async (language: Languages, user: IUser) => {
+  try {
+    const response = await fetch(`${API_URL}/setlanguage`, {
+      method: 'POST',
+      body: JSON.stringify({
+        language
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
+      },
+    });
+    if (response.status === 401) {
+      throw new Error('Unauthorized');
+    }
+    return await response.json();
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 
 export const pokedex = async (user: IUser) => {
   try {

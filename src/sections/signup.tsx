@@ -1,10 +1,13 @@
 import React from 'react';
-import { Modal, Form, Input } from 'antd';
+import { Modal, Form, Input, Select } from 'antd';
+import languages from '../utils/languages';
+import { Languages } from '../types/user';
+const { Option } = Select;
 
 interface ISignUpProps {
   isModalVisible: boolean;
   onCancel: (event: React.MouseEvent<HTMLElement>) => void;
-  handleSignUp: (username: string, email: string, password: string) => void;
+  handleSignUp: (username: string, email: string, language: Languages, password: string) => void;
 }
 
 // tslint:disable-next-line: no-any defined by rc-field-form/lib/interface
@@ -16,9 +19,9 @@ const SignUp: React.FunctionComponent<ISignUpProps> = (props) => {
   const { isModalVisible, onCancel, handleSignUp } = props;
   const [form] = Form.useForm();
   const onFinish = (values: ISignUpFormFinish): void => {
-    const {username, password} = values;
-    if (username && password) {
-      handleSignUp(values.username, values.email, values.password);
+    const {username, email, language, password} = values;
+    if (username && email && password) {
+      handleSignUp(username, email, language, password);
     }
   };
   const onOK: (event: React.MouseEvent<HTMLElement>) => void = () => {
@@ -47,6 +50,17 @@ const SignUp: React.FunctionComponent<ISignUpProps> = (props) => {
           rules={[{ required: true, message: 'Please input your email!' }]}
         >
           <Input placeholder="Email" />
+        </Form.Item>
+        <Form.Item
+          label="Language"
+          name="language"
+          rules={[{ required: false }]}
+        >
+          <Select>
+            {languages.map(language => (
+              <Option key={language} value={language}>{language}</Option>
+            ))}
+          </Select>
         </Form.Item>
         <Form.Item
           label="Password"

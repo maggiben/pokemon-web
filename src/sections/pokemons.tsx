@@ -3,7 +3,8 @@ import { Select, Button } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import Pokemon from './pokemon';
 import { pokemons as fetchPokemons } from '../utils/api';
-import { IPokemon, Languages, TPokedex } from '../types/pokemon';
+import { IPokemon, TPokedex } from '../types/pokemon';
+import { Languages} from '../types/user';
 import { IUser } from '../types/user';
 const { Option } = Select;
 

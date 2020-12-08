@@ -1,9 +1,3 @@
-export type Languages = 'english' | 'japanese' | 'chinese' | 'french';
-
-export type LanguagesMap<T> = { 
-  [language in Languages]: T 
-};
-
 export interface IPokemonBase {
   HP: number;
   Attack: number;

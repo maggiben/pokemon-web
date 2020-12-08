@@ -1,7 +1,8 @@
 import React from 'react';
 import { Row, Col, Image, Progress, Button, Empty } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
-import { IPokemon, TPokedex, Languages } from '../types/pokemon';
+import { IPokemon, TPokedex } from '../types/pokemon';
+import { Languages} from '../types/user';
 
 interface IPokedexProps {
   pokedex: TPokedex;

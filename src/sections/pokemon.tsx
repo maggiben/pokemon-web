@@ -2,8 +2,8 @@ import React from 'react';
 import classNames from 'classnames';
 import { Image, Tooltip, Button } from 'antd';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { IPokemon, Languages, TPokedex } from '../types/pokemon';
-import { IUser } from '../types/user';
+import { IPokemon, TPokedex } from '../types/pokemon';
+import { IUser, Languages } from '../types/user';
 
 interface IPokemonProps {
     user?: IUser;

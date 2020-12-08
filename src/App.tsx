@@ -1,18 +1,19 @@
 import React from 'react';
 import { Layout, Menu, Empty } from 'antd';
 import { UserOutlined, FlagOutlined } from '@ant-design/icons';
-import { login, signup, pokedex as fetchPokedex, deletePokedexPokemon, addPokedexPokemon } from './utils/api';
+import { login, signup, pokedex as fetchPokedex, deletePokedexPokemon, addPokedexPokemon, setlanguage } from './utils/api';
+import languages from './utils/languages';
 import Pokemons from './sections/pokemons';
 import Pokedex from './sections/pokedex';
 import Login from './sections/login';
 import SignUp from './sections/signup';
 import Error from './sections/error';
 import { IUser } from './types/user';
-import { IPokemon, TPokedex, Languages } from './types/pokemon';
+import { IPokemon, TPokedex } from './types/pokemon';
+import { Languages } from './types/user'; 
 import './App.css';
 
 const { Header, Content } = Layout;
-const languages = ['english', 'japanese', 'chinese', 'french'];
 
 const App: React.FunctionComponent<{}> = () => {
   const [user, setUser] = React.useState<IUser | undefined>(undefined);
@@ -61,6 +62,7 @@ const App: React.FunctionComponent<{}> = () => {
     if (user) {
       await loadPokedex(user);
       setUser(user);
+      setLanguage(user.language);
       setSection('pokemons');
     } else {
       showError('Could not signup user');
@@ -75,9 +77,9 @@ const App: React.FunctionComponent<{}> = () => {
     setShowSignUpModal(false);
   };
 
-  const handleSignUp = async (username: string, email: string, password: string): Promise<void> => {
+  const handleSignUp = async (username: string, email: string, language: Languages, password: string): Promise<void> => {
     try {
-      const user = await signup(username, email, password);
+      const user = await signup(username, email, language, password);
       await loadUser(user);
       hideSignUpModal();
     } catch (error) {
@@ -107,6 +109,23 @@ const App: React.FunctionComponent<{}> = () => {
     setUser(undefined);
     setPokedex(undefined);
     setSection('pokemons');
+  };
+
+  const handleSetLanguage = async (language: Languages): Promise<void> => {
+    if (user) {
+      try {
+        const result = await setlanguage(language, user);
+        if (result) {
+          setLanguage(language as Languages);
+        } else {
+          showError('Could not set language');
+        }
+      } catch (error) {
+        showError(error.message);
+      }
+    } else {
+      showError('User not logged in');
+    }
   };
 
   const onAddPokedexPokemon = async (pokemon: IPokemon): Promise<void> => {
@@ -174,7 +193,7 @@ const App: React.FunctionComponent<{}> = () => {
             {languages && (languages.map(language => (
               <Menu.Item 
                 key={`lang-${language}`}
-                onClick={() => setLanguage(language as Languages)}
+                onClick={() => handleSetLanguage(language as Languages)}
               >{language}</Menu.Item>
             )))}
           </Menu.SubMenu>
