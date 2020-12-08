@@ -37,16 +37,16 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
         <Form.Item
           label="Username"
           name="username"
-          rules={[{ required: true, max: 10, message: 'Please input your username!' }]}
+          rules={[{ required: true, message: 'Please input your username!' }]}
         >
-          <Input maxLength={10} placeholder="Username" />
+          <Input placeholder="Username" />
         </Form.Item>
         <Form.Item
           label="Password"
           name="password"
-          rules={[{ required: true, max: 10, message: 'Please input your password!' }]}
+          rules={[{ required: true, message: 'Please input your password!' }]}
         >
-          <Input maxLength={10} placeholder="Password" />
+          <Input.Password placeholder="Password" />
         </Form.Item>
       </Form>
     </Modal>

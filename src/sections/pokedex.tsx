@@ -1,8 +1,21 @@
 import React from 'react';
+import { IPokemon, TPokedex, Languages } from '../types/pokemon';
 
-const Pokedex: React.FunctionComponent<{}> = () => {
+interface IPokedexProps {
+  pokedex: TPokedex;
+  language: Languages;
+}
+const Pokedex: React.FunctionComponent<IPokedexProps> = (props) => {
+  const { pokedex, language } = props;
   return (
     <div>
+      {
+        pokedex.map((pokemon: IPokemon) => {
+          return (
+            <span>{pokemon.name[language]}</span>
+          );
+        })
+      }
     </div>
   );
 }

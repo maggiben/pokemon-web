@@ -1,18 +1,24 @@
 import React from 'react';
-import { pokemons as fetchPokemons } from '../utils/api';
 import { Select } from 'antd';
-import { IPokemon, Languages } from '../types/pokemon';
+import Pokemon from './pokemon';
+import { pokemons as fetchPokemons } from '../utils/api';
+import { IPokemon, Languages, TPokedex } from '../types/pokemon';
+import { IUser } from '../types/user';
 const { Option } = Select;
 
-const renderOptions = (pokemons: IPokemon[], language: Languages): React.ReactElement[] => {
-  return pokemons.map(pokemon => {
-    return <Option value={pokemon.id}>{pokemon.name[language]}</Option>
-  });
-};
+interface IPokemonsProps {
+  user?: IUser;
+  pokedex?: TPokedex;
+  onAddPokemonToPokedex: (pokemon: IPokemon) => void;
+  language: Languages;
+}
 
-const Pokemons: React.FunctionComponent<{}> = () => {
+const Pokemons: React.FunctionComponent<IPokemonsProps> = (props) => {
+  const { user, pokedex, onAddPokemonToPokedex, language } = props;
   const [pokemons, setPokemons] = React.useState<IPokemon[] | undefined>(undefined);
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [search, setSearch] = React.useState<string | undefined>(undefined);
+  const [selectedPokemon, setSelectedPokemon] = React.useState<number | undefined>(undefined);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -26,29 +32,82 @@ const Pokemons: React.FunctionComponent<{}> = () => {
     });
   }, []);
 
-  const filterOption = (input: string, option: any) => {
-    return option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) !== -1;
+  const renderOptions = (pokemons: IPokemon[], language: Languages, search: string | undefined): React.ReactElement[] => {
+    if (search) {
+      return pokemons
+      .filter(pokemon => pokemon.name[language].toLowerCase().includes(search.toLowerCase()))
+      .map(pokemon => <Option key={pokemon.id} value={pokemon.id}>{pokemon.name[language]}</Option>);
+    }
+    return pokemons.map(pokemon => <Option key={pokemon.id} value={pokemon.id}>{pokemon.name[language]}</Option>);  
+  };
+  
+  const renderPokemons = (pokemons: IPokemon[], language: Languages, search: string | undefined): React.ReactElement[] => {
+    if (search) {
+      return pokemons
+      .filter(pokemon => pokemon.name[language].toLowerCase().includes(search.toLowerCase()))
+      .map(pokemon => (
+        <li key={pokemon.id}>
+          <Pokemon key={pokemon.id} user={user} pokedex={pokedex} pokemon={pokemon} language={language} onAddPokemonToPokedex={onAddPokemonToPokedex} />
+        </li>
+      ));
+    }
+    return pokemons
+    .map(pokemon => (
+      <li key={pokemon.id}>
+        <Pokemon key={pokemon.id} user={user} pokedex={pokedex} pokemon={pokemon} language={language} onAddPokemonToPokedex={onAddPokemonToPokedex} />
+      </li>
+    ));
   };
 
-  const onSelect = (key: any): void => {
-    console.log(key);
+  const renderPokemon = (pokemons: IPokemon[], language: Languages, selectedPokemon: number): React.ReactElement => {
+    const pokemon = pokemons.find(pokemon => pokemon.id === selectedPokemon);
+    if (pokemon) {
+      return (
+        <li key={pokemon.id}>
+          <Pokemon user={user} pokemon={pokemon} pokedex={pokedex} language={language} onAddPokemonToPokedex={onAddPokemonToPokedex} />
+        </li>
+      );
+    }
+    return (<></>);
+  };
+
+  const handleSearch = (value: string) => {
+    setSelectedPokemon(undefined);
+    setSearch(value);
+  };
+
+  const handleChange = (value: number) => {
+    setSelectedPokemon(value);
+  };
+
+  const selectStyle = {
+    minWidth: '20rem'
   };
 
   return (
-    <div>
+    <div style={{width: '100%'}}>
       { pokemons && (
-        <Select
-          loading={loading}
-          placeholder="Search Pokemon"
-          onChange={onSelect}
-          notFoundContent="No results"
+        <Select 
           showSearch
-          filterOption={filterOption}
-          style={{ width: 200 }}
+          value={undefined}
+          style={selectStyle}
+          placeholder="Search Pokemon"
+          defaultActiveFirstOption={false}
+          showArrow={false}
+          filterOption={false}
+          onSearch={handleSearch}
+          onChange={handleChange}
+          notFoundContent={null}
+          className="pokemons-search"
         >
-          { renderOptions(pokemons, 'english') }
+        { renderOptions(pokemons, language, search) }
         </Select>
       )}
+      <ul className="pokemons">
+        { !loading && pokemons && !selectedPokemon && (renderPokemons(pokemons, language, search))}
+        { !loading && pokemons && selectedPokemon && (renderPokemon(pokemons, language, selectedPokemon))}
+        { loading && <div>Loading</div> }
+      </ul>
     </div>
   );
 }

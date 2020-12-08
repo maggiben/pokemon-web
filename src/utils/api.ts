@@ -15,9 +15,49 @@ export const login = async (username: string, password: string) => {
         'Content-Type': 'application/json',
       },
     });
+    if (response.status === 401) {
+      throw new Error('Invalid Login');
+    }
     return await response.json();
   } catch (error) {
-    return error;
+    throw new Error(error);
+  }
+};
+
+export const signup = async (username: string, email: string, password: string) => {
+  try {
+    const response = await fetch(`${API_URL}/signup`, {
+      method: 'POST',
+      body: JSON.stringify({
+        username,
+        email,
+        password
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (response.status === 401) {
+      throw new Error('Invalid signup');
+    }
+    return await response.json();
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const pokedex = async (user: IUser) => {
+  try {
+    const response = await fetch(`${API_URL}/pokedex`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
+      },
+    });
+    return await response.json();
+  } catch (error) {
+    throw new Error(error);
   }
 };
 
@@ -26,9 +66,10 @@ export const pokemons = async () => {
     const response = await fetch(`${API_URL}/pokemons`);
     return await response.json();
   } catch (error) {
-    return error;
+    throw new Error(error);
   }
 };
+
 
 export const addPokedexPokemon = async (pokemon: IPokemon, user: IUser) => {
   try {
@@ -42,9 +83,12 @@ export const addPokedexPokemon = async (pokemon: IPokemon, user: IUser) => {
         'Authorization': `Bearer ${user.token}`
       },
     });
+    if (response.status === 401) {
+      throw new Error(await response.json());
+    }
     return await response.json();
   } catch (error) {
-    return error;
+    throw new Error(error);
   }
 };
 
@@ -60,8 +104,11 @@ export const deletePokedexPokemon = async (pokemon: IPokemon, user: IUser) => {
         'Authorization': `Bearer ${user.token}`
       },
     });
+    if (response.status === 401) {
+      throw new Error(await response.json());
+    }
     return await response.json();
   } catch (error) {
-    return error;
+    throw new Error(error);
   }
 };
