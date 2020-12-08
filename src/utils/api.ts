@@ -93,6 +93,14 @@ export const pokemons = async () => {
   }
 };
 
+export const gettypes = async () => {
+  try {
+    const response = await fetch(`${API_URL}/gettypes`);
+    return await response.json();
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 
 export const addPokedexPokemon = async (pokemon: IPokemon, user: IUser) => {
   try {
