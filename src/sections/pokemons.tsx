@@ -60,6 +60,14 @@ const Pokemons: React.FunctionComponent<IPokemonsProps> = (props) => {
       }
       return pokemon.name[language].toLowerCase().includes(search.toLowerCase());
     })
+    .filter(pokemon => {
+      if (!selectedTypes) {
+        return true;
+      }
+      return pokemon.type.some(type => {
+        return selectedTypes.includes(type);
+      });
+    })
     .map(pokemon => <Option key={pokemon.id} value={pokemon.id}>{pokemon.name[language]}</Option>);
   };
   
@@ -112,8 +120,12 @@ const Pokemons: React.FunctionComponent<IPokemonsProps> = (props) => {
     setSearch(undefined);
   };
 
-  const handleChangeType = (value: string[]) => {
-    setSelectedTypes(value);
+  const handleChangeType = (values: string[]) => {
+    if (values.length) {
+      setSelectedTypes(values);
+      return;
+    }
+    setSelectedTypes(undefined);
   };
 
   return (
