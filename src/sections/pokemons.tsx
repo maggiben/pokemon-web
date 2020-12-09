@@ -1,8 +1,8 @@
 import React from 'react';
-import { Select, Button } from 'antd';
+import { Select, Button, Radio } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import Pokemon from './pokemon';
-import { pokemons as fetchPokemons } from '../utils/api';
+import { pokemons as fetchPokemons, gettypes as fetchTypes } from '../utils/api';
 import { IPokemon, TPokedex } from '../types/pokemon';
 import { Languages} from '../types/user';
 import { IUser } from '../types/user';
@@ -20,19 +20,23 @@ interface IPokemonsProps {
 const Pokemons: React.FunctionComponent<IPokemonsProps> = (props) => {
   const { user, pokedex, onAddPokedexPokemon, onDeletePokedexPokemon, language, showError } = props;
   const [pokemons, setPokemons] = React.useState<IPokemon[] | undefined>(undefined);
+  const [types, setTypes] = React.useState<string[] | undefined>(undefined);
   const [loading, setLoading] = React.useState<boolean>(false);
   const [search, setSearch] = React.useState<string | undefined>(undefined);
   const [selectedPokemon, setSelectedPokemon] = React.useState<number | undefined>(undefined);
-
+  const [selectedTypes, setSelectedTypes] = React.useState<string[] | undefined>(undefined);
+  
   React.useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const response = await fetchPokemons();
-      return response;
+      const pokemons = await fetchPokemons();
+      const types = await fetchTypes();
+      return [ pokemons, types ];
     };
     fetchData()
-    .then(data => {
-      setPokemons(data);
+    .then(([ pokemons, types ]) => {
+      setPokemons(pokemons);
+      setTypes(types);
       setLoading(false);
     })
     .catch(error => {
@@ -40,26 +44,41 @@ const Pokemons: React.FunctionComponent<IPokemonsProps> = (props) => {
     });
   }, []);
 
-  const renderOptions = (pokemons: IPokemon[], language: Languages, search: string | undefined): React.ReactElement[] => {
+  const renderTypes = (types: string[]): React.ReactElement[] => {
     if (search) {
-      return pokemons
-      .filter(pokemon => pokemon.name[language].toLowerCase().includes(search.toLowerCase()))
-      .map(pokemon => <Option key={pokemon.id} value={pokemon.id}>{pokemon.name[language]}</Option>);
+      return types
+      .map(type => <Option key={type} value={type}>{type}</Option>);
     }
-    return pokemons.map(pokemon => <Option key={pokemon.id} value={pokemon.id}>{pokemon.name[language]}</Option>);  
+    return types.map(type => <Option key={type} value={type}>{type}</Option>);  
+  };
+
+  const renderOptions = (pokemons: IPokemon[], language: Languages, search: string | undefined): React.ReactElement[] => {
+    return pokemons
+    .filter(pokemon => {
+      if (!search) {
+        return true;
+      }
+      return pokemon.name[language].toLowerCase().includes(search.toLowerCase());
+    })
+    .map(pokemon => <Option key={pokemon.id} value={pokemon.id}>{pokemon.name[language]}</Option>);
   };
   
   const renderPokemons = (pokemons: IPokemon[], language: Languages, search: string | undefined): React.ReactElement[] => {
-    if (search) {
-      return pokemons
-      .filter(pokemon => pokemon.name[language].toLowerCase().includes(search.toLowerCase()))
-      .map(pokemon => (
-        <li key={pokemon.id}>
-          <Pokemon user={user} pokedex={pokedex} pokemon={pokemon} language={language} onAddPokedexPokemon={onAddPokedexPokemon} onDeletePokedexPokemon={onDeletePokedexPokemon} />
-        </li>
-      ));
-    }
     return pokemons
+    .filter(pokemon => {
+      if (!search) {
+        return true;
+      }
+      return pokemon.name[language].toLowerCase().includes(search.toLowerCase());
+    })
+    .filter(pokemon => {
+      if (!selectedTypes) {
+        return true;
+      }
+      return pokemon.type.some(type => {
+        return selectedTypes.includes(type);
+      });
+    })
     .map(pokemon => (
       <li key={pokemon.id}>
         <Pokemon user={user} pokedex={pokedex} pokemon={pokemon} language={language} onAddPokedexPokemon={onAddPokedexPokemon} onDeletePokedexPokemon={onDeletePokedexPokemon} />
@@ -91,10 +110,10 @@ const Pokemons: React.FunctionComponent<IPokemonsProps> = (props) => {
   const clearSelected = () => {
     setSelectedPokemon(undefined);
     setSearch(undefined);
-  }
+  };
 
-  const selectStyle = {
-    minWidth: '20rem'
+  const handleChangeType = (value: string[]) => {
+    setSelectedTypes(value);
   };
 
   return (
@@ -103,7 +122,7 @@ const Pokemons: React.FunctionComponent<IPokemonsProps> = (props) => {
         <Select 
           showSearch
           value={selectedPokemon}
-          style={selectStyle}
+          style={{minWidth: '20rem'}}
           placeholder="Search Pokemon"
           defaultActiveFirstOption={false}
           showArrow={false}
@@ -117,6 +136,19 @@ const Pokemons: React.FunctionComponent<IPokemonsProps> = (props) => {
         </Select>
       )}
       { selectedPokemon && <Button icon={<CloseOutlined />} onClick={clearSelected}>Clear selected</Button>}
+      { types && (
+          <Select 
+          value={selectedTypes}
+          style={{minWidth: '20rem'}}
+          placeholder="Search Pokemon Type"
+          mode="tags"
+          tokenSeparators={[',']}
+          onChange={handleChangeType}
+          className="pokemons-search"
+        >
+        { renderTypes(types) }
+        </Select>
+      )}
       <ul className="pokemons">
         { !loading && pokemons && !selectedPokemon && (renderPokemons(pokemons, language, search))}
         { !loading && pokemons && selectedPokemon && (renderPokemon(pokemons, language, selectedPokemon))}
