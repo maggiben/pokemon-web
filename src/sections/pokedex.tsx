@@ -41,7 +41,7 @@ const Pokedex: React.FunctionComponent<IPokedexProps> = (props) => {
                 <div className="pokedex-type">
                   {
                     pokemon.type && pokemon.type.map(type => (
-                      <div>{type}</div>
+                      <div key={type}>{type}</div>
                     ))
                   }
                 </div>
